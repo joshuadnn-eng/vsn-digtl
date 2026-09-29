@@ -634,6 +634,18 @@ section{padding:150px var(--edge);position:relative;}
 .narrative-cite{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;color:var(--ash);text-transform:uppercase;}
 
 /* ------------------------------------------------------------
+   Client logos — sits directly above the Find Us CTA.
+   ------------------------------------------------------------ */
+.client-logos{background:var(--ink);padding-top:0;}
+.client-logo-row{
+  margin-top:44px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;
+  gap:clamp(36px,6vw,72px);
+}
+.client-logo{height:28px;width:auto;object-fit:contain;opacity:.7;transition:opacity .25s ease;}
+.client-logo:hover{opacity:1;}
+@media (max-width:640px){.client-logo{height:22px;}.client-logo-row{gap:32px;}}
+
+/* ------------------------------------------------------------
    Contact
    ------------------------------------------------------------ */
 .contact{background:var(--ink);padding-top:0;}
@@ -801,7 +813,7 @@ section{padding:150px var(--edge);position:relative;}
         <a href="work.html">Work</a>
         <a href="services.html">Services</a>
         <a href="talent.html">Talent</a>
-        <a href="#contact">Contact</a>
+        <a href="#contact">Find Us</a>
       </nav>
     </div>
   </div>
@@ -811,7 +823,9 @@ section{padding:150px var(--edge);position:relative;}
 
   <!-- ============================= HERO ============================= -->
   <section class="hero">
-    <!-- Background video — VSN showreel -->
+    <!-- Background video — VSN showreel, referenced relatively
+         so it plays straight from the same "Vsn Digital" folder without
+         needing to be re-embedded into the page. -->
     <div class="hero-media" aria-hidden="true">
       <video id="heroVideo" muted loop autoplay playsinline>
         <source src="showreel.mp4" type="video/mp4">
@@ -863,17 +877,27 @@ section{padding:150px var(--edge);position:relative;}
     </div>
   </section>
 
+  <!-- ============================= CLIENT LOGOS ============================= -->
+  <section class="client-logos" id="clients">
+    <div class="section-inner">
+      <p class="eyebrow centered reveal">Selected Clients</p>
+      <div class="client-logo-row reveal">
+        <img src="Adidas_Logo_paper.png" alt="Adidas" class="client-logo">
+        <img src="Asics_Logo_paper.png" alt="ASICS" class="client-logo">
+        <img src="Maison_Margiela_Logo_paper.png" alt="Maison Margiela" class="client-logo">
+        <img src="Puma_Logo_paper.png" alt="Puma" class="client-logo">
+      </div>
+    </div>
+  </section>
+
   <!-- ============================= CONTACT ============================= -->
   <section class="contact" id="contact">
-    <!-- Stripped down to just the CTA per Joshua (2026-08-26): this button
-         is meant to become an action link into a not-yet-built information
-         section/page (full contact details, a project-brief field, and a
-         budget-range selector, e.g. under R50k / under R100k). Until that
-         exists, it stays a mailto: link so it's still functional. -->
+    <!-- CTA into the Find Us page (get-in-touch.html), which now carries the
+         real three-question form and a proper backend (see that page). -->
     <div class="section-inner contact-centered">
       <div class="magnetic-wrap reveal">
         <a class="magnetic" id="magneticCta" href="get-in-touch.html">
-          <span class="magnetic-inner">Get in touch</span>
+          <span class="magnetic-inner">Find Us</span>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
         </a>
       </div>
@@ -889,10 +913,9 @@ section{padding:150px var(--edge);position:relative;}
       <a href="work.html">Work</a>
       <a href="services.html">Services</a>
       <a href="talent.html">Talent</a>
-      <a href="#contact">Contact</a>
+      <a href="#contact">Find Us</a>
     </nav>
     <p class="footer-copy">© 2026 VSN DIGTL. All rights reserved.</p>
-    <p class="footer-draft">DRAFT: placeholder copy, work samples &amp; contact details. Services and pricing pages not yet built.</p>
   </div>
 </footer>
 
