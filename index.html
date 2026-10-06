@@ -284,25 +284,26 @@ body.is-loaded .loader{opacity:0;visibility:hidden;pointer-events:none;}
    lived in the hero and scrolled away with it). */
 .nav-logo{
   display:flex;align-items:center;gap:10px;
-  font-family:var(--font-mono);font-weight:700;font-size:15px;letter-spacing:.05em;
-  color:var(--paper);transition:color .2s ease;
+  color:var(--paper);transition:opacity .2s ease;
 }
-.nav-logo:hover,.nav-logo:focus-visible{color:var(--signal);}
-.nav-logo-mark{width:26px;height:13px;color:inherit;}
-.nav-logo-mark svg{width:100%;height:100%;}
+.nav-logo:hover,.nav-logo:focus-visible{opacity:.8;}
+.nav-logo-chrome-mark{width:42px;height:23px;object-fit:contain;display:block;animation:mark-spin 6s linear infinite;}
+@media (prefers-reduced-motion: reduce){.nav-logo-chrome-mark{animation:none;}}
 
-/* Nav menu, reworked 2026-09-23 per Joshua: the hamburger is replaced by the
-   spinning chrome mark; hovering it (desktop) or tapping it (touch) drops
-   down a compact menu anchored under the icon, instead of the old full-height
-   off-canvas panel. */
+/* Nav menu, reworked 2026-10-06 per Joshua/VSN: the chrome mark (previously
+   the dropdown toggle on the right) moves to the left as the persistent
+   static logo (now also spinning, kept on request); a plain three-line icon
+   on the right now triggers the dropdown — hovering it (desktop) or tapping
+   it (touch) drops down a compact menu anchored under the icon, same
+   behavior as before. */
 .nav-menu{position:relative;margin-left:auto;}
 .nav-toggle{
-  display:flex;align-items:center;justify-content:center;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
   width:40px;height:40px;background:none;border:0;padding:0;cursor:pointer;
   position:relative;z-index:101;
 }
-.nav-toggle-mark{width:36px;height:20px;object-fit:contain;animation:mark-spin 6s linear infinite;}
-@media (prefers-reduced-motion: reduce){.nav-toggle-mark{animation:none;}}
+.nav-toggle-bar{width:22px;height:2px;background:var(--paper);transition:background .2s ease;}
+.nav-toggle:hover .nav-toggle-bar,.nav-toggle[aria-expanded="true"] .nav-toggle-bar{background:var(--signal);}
 
 .nav-links{
   position:absolute;top:calc(100% + 14px);left:50%;min-width:160px;
@@ -637,13 +638,18 @@ section{padding:150px var(--edge);position:relative;}
    Client logos — sits directly above the Find Us CTA.
    ------------------------------------------------------------ */
 .client-logos{background:var(--ink);padding-top:0;}
-.client-logo-row{
-  margin-top:44px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;
-  gap:clamp(36px,6vw,72px);
+.client-logo-marquee{
+  margin-top:44px;overflow:hidden;
+  -webkit-mask-image:linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image:linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
 }
-.client-logo{height:28px;width:auto;object-fit:contain;opacity:.7;transition:opacity .25s ease;}
+.client-logo-track{display:flex;align-items:center;gap:72px;width:max-content;animation:client-logo-scroll 32s linear infinite;}
+.client-logo-marquee:hover .client-logo-track{animation-play-state:paused;}
+.client-logo{height:28px;width:auto;object-fit:contain;flex:none;opacity:.7;transition:opacity .25s ease;}
 .client-logo:hover{opacity:1;}
-@media (max-width:640px){.client-logo{height:22px;}.client-logo-row{gap:32px;}}
+@keyframes client-logo-scroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+@media (max-width:640px){.client-logo{height:22px;}.client-logo-track{gap:40px;}}
+@media (prefers-reduced-motion: reduce){.client-logo-track{animation:none;}}
 
 /* ------------------------------------------------------------
    Contact
@@ -804,10 +810,12 @@ section{padding:150px var(--edge);position:relative;}
 
 <header class="nav" id="siteNav">
   <div class="container nav-inner">
-    <a href="#top" class="nav-logo"><span class="nav-logo-mark"><svg><use href="#vsn-mark"/></svg></span>VSN&nbsp;DIGTL</a>
+    <a href="#top" class="nav-logo" aria-label="VSN DIGTL — Home"><img src="vsn-mark-chrome.png" alt="" class="nav-logo-chrome-mark"></a>
     <div class="nav-menu" id="navMenu">
       <button class="nav-toggle" id="navToggle" aria-label="Open navigation" aria-expanded="false" aria-controls="navLinks">
-        <img src="vsn-mark-chrome.png" alt="" class="nav-toggle-mark">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
       </button>
       <nav id="navLinks" class="nav-links">
         <a href="work.html">Work</a>
@@ -835,11 +843,6 @@ section{padding:150px var(--edge);position:relative;}
 
     <div class="hero-inner hero-inner--centered">
       <p class="eyebrow centered reveal">A Strictly Digital Creative Production House</p>
-      <h1 class="h-display">
-        <span class="line"><span>Strategy first.</span></span>
-        <span class="line"><span>Then the <span class="accent">story.</span></span></span>
-      </h1>
-      <p class="body-copy reveal">We work out why a story needs telling before a single frame is shot, so the work earns belief and holds trust long enough to start a conversation.</p>
       <div class="hero-pillars hero-pillars--centered reveal">
         <div class="pillar"><b>Vision</b>Where you're going</div>
         <div class="pillar"><b>Strategy</b>The space between</div>
@@ -881,11 +884,33 @@ section{padding:150px var(--edge);position:relative;}
   <section class="client-logos" id="clients">
     <div class="section-inner">
       <p class="eyebrow centered reveal">Selected Clients</p>
-      <div class="client-logo-row reveal">
-        <img src="Adidas_Logo_paper.png" alt="Adidas" class="client-logo">
-        <img src="Asics_Logo_paper.png" alt="ASICS" class="client-logo">
-        <img src="Maison_Margiela_Logo_paper.png" alt="Maison Margiela" class="client-logo">
-        <img src="Puma_Logo_paper.png" alt="Puma" class="client-logo">
+      <div class="client-logo-marquee reveal">
+        <div class="client-logo-track">
+          <img src="Asics_Logo_paper.png" alt="ASICS" class="client-logo">
+          <img src="Adidas_Logo_paper.png" alt="Adidas" class="client-logo">
+          <img src="Bang_Olufsen_Logo_paper.png" alt="Bang &amp; Olufsen" class="client-logo">
+          <img src="Converse_Logo_paper.png" alt="Converse" class="client-logo">
+          <img src="Puma_Logo_paper.png" alt="Puma" class="client-logo">
+          <img src="DStv_Delicious_Logo_paper.png" alt="DStv Delicious Festival" class="client-logo">
+          <img src="Vans_Logo_paper.png" alt="Vans" class="client-logo">
+          <img src="SA_Tourism_Logo_paper.png" alt="SA Tourism" class="client-logo">
+          <img src="Opera_Mini_Logo_paper.png" alt="Opera Mini" class="client-logo">
+          <img src="Oppo_Logo_paper.png" alt="Oppo" class="client-logo">
+          <img src="Yoco_Logo_paper.png" alt="Yoco" class="client-logo">
+          <img src="Maison_Margiela_Logo_paper.png" alt="Maison Margiela" class="client-logo">
+          <img src="Asics_Logo_paper.png" alt="ASICS" class="client-logo" aria-hidden="true">
+          <img src="Adidas_Logo_paper.png" alt="Adidas" class="client-logo" aria-hidden="true">
+          <img src="Bang_Olufsen_Logo_paper.png" alt="Bang &amp; Olufsen" class="client-logo" aria-hidden="true">
+          <img src="Converse_Logo_paper.png" alt="Converse" class="client-logo" aria-hidden="true">
+          <img src="Puma_Logo_paper.png" alt="Puma" class="client-logo" aria-hidden="true">
+          <img src="DStv_Delicious_Logo_paper.png" alt="DStv Delicious Festival" class="client-logo" aria-hidden="true">
+          <img src="Vans_Logo_paper.png" alt="Vans" class="client-logo" aria-hidden="true">
+          <img src="SA_Tourism_Logo_paper.png" alt="SA Tourism" class="client-logo" aria-hidden="true">
+          <img src="Opera_Mini_Logo_paper.png" alt="Opera Mini" class="client-logo" aria-hidden="true">
+          <img src="Oppo_Logo_paper.png" alt="Oppo" class="client-logo" aria-hidden="true">
+          <img src="Yoco_Logo_paper.png" alt="Yoco" class="client-logo" aria-hidden="true">
+          <img src="Maison_Margiela_Logo_paper.png" alt="Maison Margiela" class="client-logo" aria-hidden="true">
+        </div>
       </div>
     </div>
   </section>
