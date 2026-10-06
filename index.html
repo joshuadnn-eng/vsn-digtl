@@ -383,8 +383,13 @@ body.is-loaded .hero h1 .line span{transform:translateY(0);}
 .hero-actions{display:flex;gap:16px;flex-wrap:wrap;margin-top:40px;}
 .hero-inner--centered .hero-actions{justify-content:center;}
 
-.hero-pillars{display:flex;gap:34px;flex-wrap:wrap;margin-top:88px;padding-top:28px;border-top:1px solid var(--hairline-dark);}
-.hero-pillars--centered{justify-content:center;width:100%;}
+.hero-pillars{
+  position:absolute;z-index:1;bottom:128px;left:0;right:0;margin:0 auto;
+  width:100%;max-width:var(--container);padding:0 var(--edge);
+  display:flex;gap:34px;flex-wrap:wrap;
+}
+.hero-pillars--centered{justify-content:center;}
+@media (max-width:640px){.hero-pillars{bottom:110px;gap:20px;}}
 .pillar{font-family:var(--font-mono);font-size:12px;letter-spacing:.12em;color:var(--ash);text-transform:uppercase;}
 .pillar b{color:var(--paper);font-weight:700;margin-right:8px;}
 
@@ -841,13 +846,10 @@ section{padding:150px var(--edge);position:relative;}
       <div class="hero-media-scrim"></div>
     </div>
 
-    <div class="hero-inner hero-inner--centered">
-      <p class="eyebrow centered reveal">A Strictly Digital Creative Production House</p>
-      <div class="hero-pillars hero-pillars--centered reveal">
-        <div class="pillar"><b>Vision</b>Where you're going</div>
-        <div class="pillar"><b>Strategy</b>The space between</div>
-        <div class="pillar"><b>Narrative</b>Where you've been</div>
-      </div>
+    <div class="hero-pillars hero-pillars--centered reveal">
+      <div class="pillar"><b>Vision</b>Where you're going</div>
+      <div class="pillar"><b>Strategy</b>The space between</div>
+      <div class="pillar"><b>Narrative</b>Where you've been</div>
     </div>
 
     <div class="scroll-cue scroll-cue--centered"><span class="scroll-cue-line"></span>Scroll</div>
