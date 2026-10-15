@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>VSN DIGTL — Get in Touch</title>
-<meta name="description" content="Tell VSN DIGTL what you're building.">
+<title>VSN DIGITL | Get in Touch</title>
+<meta name="description" content="Tell VSN DIGITL what you're building.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
@@ -49,7 +49,7 @@
    TOKENS — VSN Brand Bible, applied verbatim
    ============================================================ */
 /* ============================================================
-   VSN DIGTL — homepage v2
+   VSN DIGITL — homepage v2
    Art direction: cinematic, editorial, kinetic. Refs: detroit.paris
    (large-format editorial imagery, neutral ground) + magic.film
    (dark, video-forward, horizontal work strip, bold uppercase type).
@@ -284,25 +284,26 @@ body.is-loaded .loader{opacity:0;visibility:hidden;pointer-events:none;}
    lived in the hero and scrolled away with it). */
 .nav-logo{
   display:flex;align-items:center;gap:10px;
-  font-family:var(--font-mono);font-weight:700;font-size:15px;letter-spacing:.05em;
-  color:var(--paper);transition:color .2s ease;
+  color:var(--paper);transition:opacity .2s ease;
 }
-.nav-logo:hover,.nav-logo:focus-visible{color:var(--signal);}
-.nav-logo-mark{width:26px;height:13px;color:inherit;}
-.nav-logo-mark svg{width:100%;height:100%;}
+.nav-logo:hover,.nav-logo:focus-visible{opacity:.8;}
+.nav-logo-chrome-mark{width:42px;height:23px;object-fit:contain;display:block;animation:mark-spin 6s linear infinite;}
+@media (prefers-reduced-motion: reduce){.nav-logo-chrome-mark{animation:none;}}
 
-/* Nav menu, reworked 2026-09-23 per Joshua: the hamburger is replaced by the
-   spinning chrome mark; hovering it (desktop) or tapping it (touch) drops
-   down a compact menu anchored under the icon, instead of the old full-height
-   off-canvas panel. */
+/* Nav menu, reworked 2026-10-06 per Joshua/VSN: the chrome mark (previously
+   the dropdown toggle on the right) moves to the left as the persistent
+   static logo (now also spinning, kept on request); a plain three-line icon
+   on the right now triggers the dropdown — hovering it (desktop) or tapping
+   it (touch) drops down a compact menu anchored under the icon, same
+   behavior as before. */
 .nav-menu{position:relative;margin-left:auto;}
 .nav-toggle{
-  display:flex;align-items:center;justify-content:center;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
   width:40px;height:40px;background:none;border:0;padding:0;cursor:pointer;
   position:relative;z-index:101;
 }
-.nav-toggle-mark{width:36px;height:20px;object-fit:contain;animation:mark-spin 6s linear infinite;}
-@media (prefers-reduced-motion: reduce){.nav-toggle-mark{animation:none;}}
+.nav-toggle-bar{width:22px;height:2px;background:var(--paper);transition:background .2s ease;}
+.nav-toggle:hover .nav-toggle-bar,.nav-toggle[aria-expanded="true"] .nav-toggle-bar{background:var(--signal);}
 
 .nav-links{
   position:absolute;top:calc(100% + 14px);left:50%;min-width:160px;
@@ -759,7 +760,7 @@ section{padding:150px var(--edge);position:relative;}
 .footer-logo{justify-self:start;display:flex;align-items:center;gap:10px;font-family:var(--font-mono);font-weight:700;font-size:13px;color:var(--paper);}
 .footer-links{justify-self:center;display:flex;gap:28px;font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ash);}
 .footer-links a:hover,.footer-links a:focus-visible{color:var(--signal);}
-.footer-copy{justify-self:end;text-align:right;font-family:var(--font-mono);font-size:11px;color:var(--ash);}
+.footer-copy{justify-self:end;text-align:right;font-family:var(--font-mono);font-size:11px;color:var(--ash);line-height:1.7;}
 .footer-draft{grid-column:1/-1;margin-top:20px;padding-top:20px;border-top:1px solid var(--hairline-dark);
   font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;color:var(--lavender-ink);text-transform:uppercase;}
 
@@ -769,7 +770,13 @@ section{padding:150px var(--edge);position:relative;}
   .footer-inner{grid-template-columns:1fr;justify-items:center;text-align:center;gap:16px;}
   .footer-logo,.footer-links,.footer-copy{justify-self:center;text-align:center;}
 }
+.footer-meta{justify-self:end;display:flex;flex-direction:column;align-items:flex-end;gap:10px;}
+.footer-social{display:flex;gap:20px;font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;}
+.footer-social a{color:var(--paper);transition:color .2s ease;}
+.footer-social a:hover,.footer-social a:focus-visible{color:var(--signal);}
+@media (max-width:640px){.footer-meta{justify-self:center;align-items:center;}.footer-meta .footer-copy{text-align:center;}}
 </style>
+<script>try{sessionStorage.setItem('vsnLoaderSeen','1');}catch(e){}</script>
 </head>
 <body class="is-loaded">
 
@@ -787,10 +794,12 @@ section{padding:150px var(--edge);position:relative;}
 
 <header class="nav" id="siteNav">
   <div class="container nav-inner">
-    <a href="index.html" class="nav-logo"><span class="nav-logo-mark"><svg><use href="#vsn-mark"/></svg></span>VSN&nbsp;DIGTL</a>
+    <a href="../VSN%20DIGTL%20Website.html" class="nav-logo" aria-label="VSN DIGITL home"><img src="../assets/vsn-mark-chrome.png" alt="" class="nav-logo-chrome-mark"></a>
     <div class="nav-menu" id="navMenu">
       <button class="nav-toggle" id="navToggle" aria-label="Open navigation" aria-expanded="false" aria-controls="navLinks">
-        <img src="vsn-mark-chrome.png" alt="" class="nav-toggle-mark">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
       </button>
       <nav id="navLinks" class="nav-links">
         <a href="work.html">Work</a>
@@ -810,7 +819,7 @@ section{padding:150px var(--edge);position:relative;}
        before the video was added. -->
   <section class="enquiry">
     <div class="section-inner enquiry-inner">
-      <a href="index.html" class="enquiry-back reveal">&larr; Back to VSN DIGTL</a>
+      <a href="../VSN%20DIGTL%20Website.html" class="enquiry-back reveal">&larr; Back to VSN DIGITL</a>
 
       <div class="section-head section-head--centered reveal">
         <p class="eyebrow centered">Find Us</p>
@@ -850,6 +859,7 @@ section{padding:150px var(--edge);position:relative;}
             <button type="button" class="chip" data-value="Production">Production</button>
             <button type="button" class="chip" data-value="Cinematography">Cinematography</button>
             <button type="button" class="chip" data-value="Editing">Editing</button>
+            <button type="button" class="chip" data-value="Script Writing">Script Writing</button>
             <button type="button" class="chip" data-value="Stills">Stills</button>
           </div>
         </div>
@@ -874,7 +884,7 @@ section{padding:150px var(--edge);position:relative;}
         <button type="submit" class="btn btn-primary btn-pill enquiry-submit" id="enquirySubmit">
           <span class="enquiry-submit-label">Send Enquiry</span> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
         </button>
-        <p class="enquiry-note is-error" id="sendError" hidden>Something went wrong sending that — please try again, or email <a href="mailto:hello@vsndigtl.co.za" style="color:inherit;">hello@vsndigtl.co.za</a> directly.</p>
+        <p class="enquiry-note is-error" id="sendError" hidden>Something went wrong sending that. Please try again, or email <a href="mailto:hello@vsndigtl.co.za" style="color:inherit;">hello@vsndigtl.co.za</a> directly.</p>
       </form>
 
       <div class="enquiry-confirm" id="enquiryConfirm">
@@ -889,14 +899,20 @@ section{padding:150px var(--edge);position:relative;}
 
 <footer class="footer">
   <div class="footer-inner">
-    <a href="index.html" class="footer-logo"><svg width="20" height="10"><use href="#vsn-mark"/></svg>VSN&nbsp;DIGTL</a>
+    <a href="../VSN%20DIGTL%20Website.html" class="footer-logo"><svg width="20" height="10"><use href="#vsn-mark"/></svg>VSN&nbsp;DIGITL</a>
     <nav class="footer-links">
       <a href="work.html">Work</a>
       <a href="services.html">Services</a>
       <a href="talent.html">Talent</a>
       <a href="get-in-touch.html">Find Us</a>
     </nav>
-    <p class="footer-copy">© 2026 VSN DIGTL. All rights reserved.</p>
+    <div class="footer-meta">
+      <nav class="footer-social" aria-label="VSN on social media">
+        <a href="https://www.instagram.com/vsndigitl/" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://www.linkedin.com/company/vsndigitl/" target="_blank" rel="noopener">LinkedIn</a>
+      </nav>
+      <p class="footer-copy">&copy; VSN Production (Pty) Ltd<br>Johannesburg, South Africa</p>
+    </div>
   </div>
 </footer>
 
