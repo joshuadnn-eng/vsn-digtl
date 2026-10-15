@@ -1092,12 +1092,12 @@ body.is-loaded .hero-coords{opacity:1;transform:none;}
   <!-- 05: Work. Typographic index, right; hover swaps the background film. -->
   <section class="home-work" id="work">
     <div class="home-work-media" aria-hidden="true">
-      <video data-slug="asics" muted loop playsinline preload="none"><source src="work-asics.mp4" type="video/mp4"></video>
-      <video data-slug="man-eater" muted loop playsinline preload="none"><source src="work-man-eater.mp4" type="video/mp4"></video>
-      <video data-slug="adidas-sl-evo" muted loop playsinline preload="none"><source src="work-adidas-sl-evo.mp4" type="video/mp4"></video>
-      <video data-slug="adidas-superstar" muted loop playsinline preload="none"><source src="work-adidas-superstar.mp4" type="video/mp4"></video>
-      <video data-slug="puma-mostro" muted loop playsinline preload="none"><source src="work-puma-mostro.mp4" type="video/mp4"></video>
-      <video data-slug="puma-speedcat" muted loop playsinline preload="none"><source src="work-puma-speedcat.mp4" type="video/mp4"></video>
+      <video data-slug="asics" data-src="work-asics.mp4" muted loop playsinline preload="none"></video>
+      <video data-slug="man-eater" data-src="work-man-eater.mp4" muted loop playsinline preload="none"></video>
+      <video data-slug="adidas-sl-evo" data-src="work-adidas-sl-evo.mp4" muted loop playsinline preload="none"></video>
+      <video data-slug="adidas-superstar" data-src="work-adidas-superstar.mp4" muted loop playsinline preload="none"></video>
+      <video data-slug="puma-mostro" data-src="work-puma-mostro.mp4" muted loop playsinline preload="none"></video>
+      <video data-slug="puma-speedcat" data-src="work-puma-speedcat.mp4" muted loop playsinline preload="none"></video>
       <div class="home-work-scrim"></div>
     </div>
     <div class="section-inner home-work-inner">
@@ -1382,18 +1382,30 @@ body.is-loaded .hero-coords{opacity:1;transform:none;}
   }
 
 
-  /* ---------- Homepage Work index: hovering a title swaps the background film ---------- */
+  /* ---------- Homepage Work index: hovering a title swaps the background film.
+     Only one film is ever attached at a time: the outgoing film is fully
+     unloaded once it has faded, so it stops downloading and frees its
+     connection (otherwise later titles can stall on some setups). ---------- */
   var workVids = {};
   document.querySelectorAll('.home-work-media video').forEach(function(v){ workVids[v.getAttribute('data-slug')] = v; });
   var workLinks = document.querySelectorAll('.home-work-list a[data-slug]');
   var activeWork = null;
+  var unloadWork = function(v){
+    v.pause();
+    if(v.getAttribute('src')){ v.removeAttribute('src'); v.load(); }
+  };
   var showWork = function(slug){
     if(activeWork === slug){ return; }
-    if(activeWork && workVids[activeWork]){ workVids[activeWork].classList.remove('is-active'); workVids[activeWork].pause(); }
+    var prev = activeWork && workVids[activeWork];
+    if(prev){
+      prev.classList.remove('is-active');
+      setTimeout(function(){ if(!prev.classList.contains('is-active')){ unloadWork(prev); } }, 700);
+    }
     workLinks.forEach(function(l){ l.classList.toggle('is-active', l.getAttribute('data-slug') === slug); });
     activeWork = slug;
     var v = workVids[slug];
     if(v){
+      if(!v.getAttribute('src')){ v.setAttribute('src', v.getAttribute('data-src')); }
       v.classList.add('is-active');
       var pr = v.play();
       if(pr && pr.catch){ pr.catch(function(){}); }
@@ -1403,6 +1415,18 @@ body.is-loaded .hero-coords{opacity:1;transform:none;}
     l.addEventListener('mouseenter', function(){ showWork(l.getAttribute('data-slug')); });
     l.addEventListener('focus', function(){ showWork(l.getAttribute('data-slug')); });
   });
+
+  /* Showreel only plays while its sections are on screen. */
+  var reelEl = document.querySelector('.reel');
+  var heroVideo = document.getElementById('heroVideo');
+  if(reelEl && heroVideo && 'IntersectionObserver' in window){
+    new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){ var p = heroVideo.play(); if(p && p.catch){ p.catch(function(){}); } }
+        else { heroVideo.pause(); }
+      });
+    }).observe(reelEl);
+  }
 
   /* ---------- Homepage Find Us form: chip questions + Formspree submit.
      Same behaviour and endpoint as get-in-touch.html. ---------- */
