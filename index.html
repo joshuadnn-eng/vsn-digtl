@@ -963,6 +963,13 @@ body.is-loaded .hero-coords{opacity:1;transform:none;}
   .grain{display:none;}
   .nav.nav--solid{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(17,23,23,.96);}
 }
+
+/* Infinite loop (2026-10-21, per Joshua): one screen after the footer that
+   mirrors the opening showreel screen exactly. When it fills the viewport the
+   page jumps back to the real top at the same point in the film, so scrolling
+   down simply carries on from the beginning. */
+.loop-tail{position:relative;height:100vh;height:100svh;overflow:hidden;background:var(--ink);}
+.loop-tail video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
 </style>
 <script>try{if(sessionStorage.getItem('vsnLoaderSeen')==='1'){document.documentElement.classList.add('skip-loader');}}catch(e){}</script>
 </head>
@@ -1285,6 +1292,17 @@ body.is-loaded .hero-coords{opacity:1;transform:none;}
   </div>
 </footer>
 
+<!-- Infinite loop: a mirror of the opening showreel screen (decorative). -->
+<div class="loop-tail" id="loopTail" aria-hidden="true">
+  <video muted loop playsinline preload="none" poster="showreel-poster.jpg"></video>
+  <div class="reel-scrim"></div>
+  <div class="hero-coords">
+    <span class="hero-coords-line">26&deg;12&prime;16&Prime;S&nbsp;&nbsp;28&deg;2&prime;44&Prime;E</span>
+    <span class="hero-coords-place">Johannesburg, South Africa</span>
+  </div>
+  <div class="scroll-cue scroll-cue--centered"><span class="scroll-cue-line"></span>Scroll</div>
+</div>
+
 <script>
 (function(){
   var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1313,7 +1331,13 @@ body.is-loaded .hero-coords{opacity:1;transform:none;}
 
   /* ---------- Nav solid-on-scroll ---------- */
   var nav = document.getElementById('siteNav');
-  var onScroll = function(){ nav.classList.toggle('nav--solid', window.scrollY > 12); };
+  var loopTailEl = document.getElementById('loopTail');
+  var onScroll = function(){
+    var y = window.scrollY;
+    /* Keep the bar transparent as the loop screen arrives, matching the top of the page. */
+    var nearLoop = loopTailEl && y > loopTailEl.offsetTop - 140;
+    nav.classList.toggle('nav--solid', y > 12 && !nearLoop);
+  };
   document.addEventListener('scroll', onScroll, {passive:true});
   onScroll();
 
@@ -1445,6 +1469,47 @@ body.is-loaded .hero-coords{opacity:1;transform:none;}
         else { heroVideo.pause(); }
       });
     }).observe(reelEl);
+  }
+
+  /* ---------- Infinite loop: past the footer, carry on from the top ---------- */
+  var loopTail = document.getElementById('loopTail');
+  var tailVideo = loopTail && loopTail.querySelector('video');
+  if(loopTail && tailVideo && heroVideo){
+    var heroSrc = function(){
+      var s = heroVideo.currentSrc || heroVideo.getAttribute('src');
+      if(!s){ var src = heroVideo.querySelector('source'); s = src ? src.src : ''; }
+      return s;
+    };
+    if('IntersectionObserver' in window){
+      new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if(entry.isIntersecting){
+            if(!tailVideo.getAttribute('src')){ tailVideo.setAttribute('src', heroSrc()); }
+            try{ tailVideo.currentTime = heroVideo.currentTime; }catch(e){}
+            var p = tailVideo.play(); if(p && p.catch){ p.catch(function(){}); }
+          } else {
+            tailVideo.pause();
+          }
+        });
+      }).observe(loopTail);
+    }
+    var looping = false;
+    var checkLoop = function(){
+      if(looping){ return; }
+      var top = loopTail.offsetTop;
+      if(window.scrollY >= top - 1){
+        looping = true;
+        try{ if(tailVideo.readyState > 0){ heroVideo.currentTime = tailVideo.currentTime; } }catch(e){}
+        var root = document.documentElement;
+        var prev = root.style.scrollBehavior;
+        root.style.scrollBehavior = 'auto';   /* jump, never animate, back to the top */
+        window.scrollTo(0, Math.max(0, window.scrollY - top));
+        root.style.scrollBehavior = prev;
+        var hp = heroVideo.play(); if(hp && hp.catch){ hp.catch(function(){}); }
+        requestAnimationFrame(function(){ looping = false; });
+      }
+    };
+    document.addEventListener('scroll', checkLoop, {passive:true});
   }
 
   /* ---------- Homepage Find Us form: chip questions + Formspree submit.
